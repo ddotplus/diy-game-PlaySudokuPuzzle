@@ -9,7 +9,7 @@ MIT license
 Copyright (c) 2024 ddotplus@github
 """
 
-from sudoku_generator_trywhile import *
+from sudoku_generator import *
 import numpy as np
 
 def solve_sudoku(sudoku_array):
