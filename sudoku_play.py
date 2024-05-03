@@ -194,10 +194,11 @@ def main_sudoku_play():
                         continue
                     try:
                         x, y = convert_index(array_size, t[0][0], t[0][1])
-                        v, _, _ = available_digits(puzzle_updated, x[0], y[0])
-                        if len(v[0]) == 1 and v[0][0] == int(t[1]):
+                        if c_solution[x[0], y[0]] == int(t[1]):
                             filling_new.append(s_clean)
-                            puzzle_updated[x[0], y[0]] = v[0][0]
+                            puzzle_updated[x[0], y[0]] = int(t[1])
+                        else:
+                            error_lst.append(s_clean)
                     except Exception:
                         error_lst.append(s_clean)
                 if len(error_lst) > 0:
