@@ -108,6 +108,7 @@ def main_sudoku_play():
                     '   h:  print this help',
                     '   hN:  show next N hints (random)',
                     '   ha:  show all hints',
+                    '   D:  highlight Sudoku number D',
                     '   c:  show current status',
                     '   r:  restart current puzzle',
                     '   s:  show final solution',
@@ -130,7 +131,10 @@ def main_sudoku_play():
         filling_lst = []  ## list of filling strings, like ["B7=8"]
         new_puzzle_now = False  ## to start a new puzzle immediately
         while np.count_nonzero(puzzle_updated == 0) > 0 and not new_puzzle_now:
-            if p.lower() in ['h', 'help']:
+            if len(p) == 0 or len(p.replace(' ', '')) == 0:
+                p = input('  >  ')
+                continue
+            elif p.lower() in ['h', 'help']:
                 for s in help_str:
                     print(' ' * 4 + s)
             elif p.lower()[0] == 'h' and not ('=' in p):
@@ -156,6 +160,10 @@ def main_sudoku_play():
                 if N != 'a':
                     hint_list = hint_list[:min([int(N), len(idx_hint)])]
                 display(puzzle_updated, filling_lst, hint_list)
+            elif p.upper() == 'D':
+                print('  "{}" is not a Sudoku number, please input a number!'.format(p))
+                p = input('  >  ')
+                continue
             elif p.lower() == 'c':
                 display(c_puzzle, filling_lst)
             elif p.lower() == 's':
@@ -218,6 +226,14 @@ def main_sudoku_play():
                         continue
                 else:
                     print('  0 position is updated')
+            elif p.isdigit():
+                p = int(p)
+                if 0 < p <= array_size:
+                    display(c_puzzle, filling_lst, digit=p)
+                else:
+                    print('  "{}" is not a Sudoku number. try again'.format(p))
+                    p = input('  >  ')
+                    continue
             else:
                 print('  input not recognized, ignored')
             print('Type short-cuts or filling string(s) here: ')

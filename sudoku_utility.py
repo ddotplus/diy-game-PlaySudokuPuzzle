@@ -112,7 +112,7 @@ def convert_index(array_size, pos_x, pos_y):
     return pos_x_converted, pos_y_converted
 
 
-def display(sudoku_array, filling_list=None, hint_list=None):
+def display(sudoku_array, filling_list=None, hint_list=None, digit=None):
     """ Box-drawing of Sudoku puzzle with a color scheme
     Note:
         - limit of current version: array size <= 25
@@ -123,6 +123,7 @@ def display(sudoku_array, filling_list=None, hint_list=None):
         sudoku_array: 2D numpy array, digits in Sudoku array
         filling_list: list of filling strings, eg: ['A2=5', 'D7=8', 'Ka=12']
         hint_list: list of position strings as hint, eg: ['A2','D7']
+        digit: int, single Sudoku number/digit to be highlighted
     Output:
         boxdraw: list of line strings, ready for printing in terminal
     """
@@ -166,6 +167,15 @@ def display(sudoku_array, filling_list=None, hint_list=None):
         for i in range(len(h_lst)):                ## convert to array indices
             ax, ay = convert_index(n0, h_lst[i][0], h_lst[i][1])
             h_lst[i] = [ax[0], ay[0]]              ## will be used in display
+    ## check <digit>
+    if not (digit is None):
+        if (isinstance(digit, str) and digit.isdigit()) or \
+                (digit == int(digit)):
+            digit = int(digit)
+        else:
+            raise ValueError('display(): <digit> not digit')
+        if digit < 1 or digit > n0:
+            raise ValueError('display(): <digit> not in [1,{}]'.format(n0))
 
     ## color scheme (ANSI escape sequences)
     font_type = '1;'          ## bold: for normal cell value
@@ -174,12 +184,16 @@ def display(sudoku_array, filling_list=None, hint_list=None):
     bg_color_1 = '47m'        ## white: style-1 background of inner block
     hint_type = '5;'          ## flashing: for hint highlight
     fill_color = '31;'        ## red: for filling value
+    digi_color = '37;'
+    digi_bg = '40m'          ## : for the digit to be highlighted
     normal = ['\033[' + font_type + font_color + bg_color_0,
               '\033[' + font_type + font_color + bg_color_1]
     hint = ['\033[' + hint_type + font_color + bg_color_0,
             '\033[' + hint_type + font_color + bg_color_1]
     fill = ['\033[' + font_type + fill_color + bg_color_0,
             '\033[' + font_type + fill_color + bg_color_1]
+    digi = ['\033[' + font_type + digi_color + digi_bg,
+            '\033[' + font_type + digi_color + digi_bg]
     ending = '\033[0;0m'
     # print(hint[0] + 'hint' + ending, fill[0] + 'fill' + ending)  ## for test
 
@@ -213,6 +227,8 @@ def display(sudoku_array, filling_list=None, hint_list=None):
                 t = hint[bg_index] + t + ending
             elif t_show == 'fill':
                 t = fill[bg_index] + t + ending
+            elif sudoku_array[ix, iy] == digit:
+                t = digi[bg_index] + t + ending
             else:
                 t = normal[bg_index] + t + ending
             line.append(t_space + t + t_space)
@@ -228,7 +244,7 @@ def display(sudoku_array, filling_list=None, hint_list=None):
     return boxdraw
 
 
-def display_classic(sudoku_array, filling_list=None, hint_list=None):
+def display_classic(sudoku_array, filling_list=None, hint_list=None, digit=None):
     """ Box-drawing of Sudoku puzzle with classical black-white borderlines
        (under construction)
     Note:
@@ -240,6 +256,7 @@ def display_classic(sudoku_array, filling_list=None, hint_list=None):
         sudoku_array: 2D numpy array, digits in Sudoku array
         filling_list: list of filling strings, eg: ['A2=5', 'D7=8', 'Ka=12']
         hint_list: list of position strings as hint, eg: ['A2','D7']
+        digit: int, single Sudoku number to be highlighted
     Output:
         boxdraw: list of strings, ready for printing on terminal
     """
