@@ -159,23 +159,25 @@ def main_sudoku_play():
                 random.shuffle(hint_list)
                 if N != 'a':
                     hint_list = hint_list[:min([int(N), len(idx_hint)])]
+                print('  show {} hint positions flashing'.format(len(hint_list)))
                 display(puzzle_updated, filling_lst, hint_list)
             elif p.upper() == 'D':
                 print('  "{}" is not a Sudoku number, please input a number!'.format(p))
                 p = input('  >  ')
                 continue
             elif p.lower() == 'c':
+                print('  show current puzzle progress')
                 display(c_puzzle, filling_lst)
             elif p.lower() == 's':
+                print('  show solution to the puzzle')
                 display(c_solution)
             elif p.lower() == 'r':  ## restart current puzzle
                 print('-' * n_dash)
                 print('Restart current puzzle with ID:',
                       [array_size, random_seed, difficulty])
+                display(c_puzzle)
                 puzzle_updated = c_puzzle.copy()
                 filling_lst = []
-                p = 'c'
-                continue
             elif p.lower() == 'n':  ## start a new puzzle now
                 new_puzzle_now = True
                 continue
@@ -229,6 +231,7 @@ def main_sudoku_play():
             elif p.isdigit():
                 p = int(p)
                 if 0 < p <= array_size:
+                    print('  highlight Sudoku number ({})'.format(p))
                     display(c_puzzle, filling_lst, digit=p)
                 else:
                     print('  "{}" is not a Sudoku number. try again'.format(p))

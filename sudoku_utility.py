@@ -184,16 +184,16 @@ def display(sudoku_array, filling_list=None, hint_list=None, digit=None):
     bg_color_1 = '47m'        ## white: style-1 background of inner block
     hint_type = '5;'          ## flashing: for hint highlight
     fill_color = '31;'        ## red: for filling value
-    digi_color = '37;'
-    digi_bg = '40m'          ## : for the digit to be highlighted
+    digi_color = '37;'        ## white: for the digit to be highlighted
+    digi_bg = '40m'           ## balck: for the digit to be highlighted
     normal = ['\033[' + font_type + font_color + bg_color_0,
               '\033[' + font_type + font_color + bg_color_1]
     hint = ['\033[' + hint_type + font_color + bg_color_0,
             '\033[' + hint_type + font_color + bg_color_1]
     fill = ['\033[' + font_type + fill_color + bg_color_0,
             '\033[' + font_type + fill_color + bg_color_1]
-    digi = ['\033[' + font_type + digi_color + digi_bg,
-            '\033[' + font_type + digi_color + digi_bg]
+    digi = ['\033[' + font_type + fill_color + digi_bg,  ## for filled
+            '\033[' + font_type + digi_color + digi_bg]  ## for not filled
     ending = '\033[0;0m'
     # print(hint[0] + 'hint' + ending, fill[0] + 'fill' + ending)  ## for test
 
@@ -214,8 +214,11 @@ def display(sudoku_array, filling_list=None, hint_list=None, digit=None):
                 if not (filling_list is None or len(filling_list) == 0):
                     t = [int(v) for x, y, v in f_lst if x == ix and y == iy]
                     if len(t) > 0:
-                        t = ('{:'+str(nd)+'d}').format(t[0])
-                        t_show = 'fill'
+                        if t[0] == digit:
+                            t_show = 'fill_digi'
+                        else:
+                            t_show = 'fill'
+                        t = ('{:' + str(nd) + 'd}').format(t[0])
                 if len(t) == 0:
                     t = u"\u2587" * nd
             else:
@@ -227,8 +230,10 @@ def display(sudoku_array, filling_list=None, hint_list=None, digit=None):
                 t = hint[bg_index] + t + ending
             elif t_show == 'fill':
                 t = fill[bg_index] + t + ending
+            elif t_show == 'fill_digi':
+                t = digi[0] + t + ending
             elif sudoku_array[ix, iy] == digit:
-                t = digi[bg_index] + t + ending
+                t = digi[1] + t + ending
             else:
                 t = normal[bg_index] + t + ending
             line.append(t_space + t + t_space)
